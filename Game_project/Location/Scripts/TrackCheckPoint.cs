@@ -4,22 +4,24 @@ using UnityEngine;
 
 public class TrackCheckPoint : MonoBehaviour
 {
-    List <CheckpointSingle> checkpointSingles = new List <CheckpointSingle> ();
+    List <CheckpointSingle> checkpointSinglesList;
 
     void Awake()
     {
         Transform checkpointTransform = transform.Find("Checkpoints");
 
+        checkpointSinglesList = new List <CheckpointSingle>();
         foreach ( Transform  checkpointSingleTransform in checkpointTransform)
         {
             CheckpointSingle checkpointSingle = checkpointSingleTransform.GetComponent<CheckpointSingle>();
             checkpointSingle.SetTrackCheckpoints(this);
+            checkpointSinglesList.Add(checkpointSingle);
         }
     }
 
     public void NorakThroughtCheckpoint(CheckpointSingle checkpointSingle)
     {
-        Debug.Log(checkpointSingle.transform.name);
+        Debug.Log(checkpointSinglesList.IndexOf(checkpointSingle));
     }
     
 }
