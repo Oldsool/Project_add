@@ -1,10 +1,14 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TrackCheckPoint : MonoBehaviour
 {
+
+
     List <CheckpointSingle> checkpointSinglesList;
+    private int nextCheckpointSingleIndex;
 
     void Awake()
     {
@@ -17,11 +21,25 @@ public class TrackCheckPoint : MonoBehaviour
             checkpointSingle.SetTrackCheckpoints(this);
             checkpointSinglesList.Add(checkpointSingle);
         }
+
+        nextCheckpointSingleIndex = 0;
     }
 
     public void NorakThroughtCheckpoint(CheckpointSingle checkpointSingle)
     {
-        Debug.Log(checkpointSinglesList.IndexOf(checkpointSingle));
+        if (checkpointSinglesList.IndexOf(checkpointSingle) == nextCheckpointSingleIndex)
+        {
+            //correct
+            nextCheckpointSingleIndex = (nextCheckpointSingleIndex) + 1 % checkpointSinglesList.Count;
+        
+            Debug.Log(nextCheckpointSingleIndex);
+        }
+        else
+        {
+            //uncorrect
+            Debug.Log(nextCheckpointSingleIndex);
+           
+        }
     }
     
 }
