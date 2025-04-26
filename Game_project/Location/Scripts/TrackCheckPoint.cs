@@ -35,13 +35,13 @@ public class TrackCheckPoint : MonoBehaviour
             //correct
             nextCheckpointSingleIndex = (nextCheckpointSingleIndex) + 1 % checkpointSinglesList.Count;
         
-            Debug.Log(nextCheckpointSingleIndex);
+            Debug.Log("Верный чекпоинт +1 ");
             OnPlayerCorrectCheckpoint?.Invoke();// this, EventArgs.Empty);
         }
         else
         {
             //uncorrect
-            Debug.Log(nextCheckpointSingleIndex);
+            Debug.Log("неверный чекпоинт -1 ");
             OnPlayerWrongCheckpoint?.Invoke();// this, EventArgs.Empty);
 
         }

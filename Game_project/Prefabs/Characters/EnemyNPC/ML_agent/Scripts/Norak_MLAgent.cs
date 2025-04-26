@@ -38,13 +38,13 @@ public class Norak_MLAgent : Agent
 
     void TrackCheckpoint_OnCarCorrectCheckpoint()// object sender, EventArgs e)
     {
-        Debug.Log("Событие произошло!");
+        //Debug.Log("Событие произошло!");
         AddReward(+1);
     }
 
     void TrackCheckpoint_OnCarWrongCheckpoint()
     {
-        Debug.Log("Событие произошло неверно !");
+        //Debug.Log("Событие произошло неверно !");
         AddReward(-1);
         EndEpisode();
     }
@@ -108,7 +108,7 @@ public class Norak_MLAgent : Agent
             //backGround.material.color = Color.green;
             //AddReward(+5f);
             //TrackCheckpoint_OnCarCorrectCheckpoint();
-            Debug.Log("Correct");
+            //Debug.Log("Correct");
            // trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
             //trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
             //EndEpisode();
@@ -119,7 +119,7 @@ public class Norak_MLAgent : Agent
             //backGround.material.color = Color.red;
             AddReward(-1f);
 
-            Debug.Log("Uncorrect");
+            Debug.Log("Коснулись стены");
             EndEpisode();
             //trackCheckPoint.NorakThroughtCheckpoint(checkpoint);
 
