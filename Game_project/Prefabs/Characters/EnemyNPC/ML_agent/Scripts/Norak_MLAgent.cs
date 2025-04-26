@@ -46,7 +46,7 @@ public class Norak_MLAgent : Agent
     {
         //Debug.Log("Событие произошло неверно !");
         AddReward(-1);
-        EndEpisode();
+        //EndEpisode();
     }
 
     public override void OnEpisodeBegin() // начало нового эпизода

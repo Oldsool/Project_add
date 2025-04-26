@@ -1667,8 +1667,8 @@ Transform:
   m_GameObject: {fileID: 368265339}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.23, y: -37.3, z: -137.15}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 3.23, y: -37.3723, z: -138.5825}
+  m_LocalScale: {x: 1, y: 1.034888, z: 5.795514}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 852422279}
@@ -3061,13 +3061,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 876556316}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.99, y: -37.3, z: -143.26}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: 0.38460883, z: -0, w: 0.92307967}
+  m_LocalPosition: {x: 9.1549, y: -37.3998, z: -142.5697}
+  m_LocalScale: {x: 1, y: 0.9715035, z: 6.388885}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 852422279}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 45.239, z: 0}
 --- !u!65 &876556318
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5916,7 +5916,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: My Behavior
   TeamId: 0
   m_UseChildSensors: 1
@@ -7297,8 +7297,8 @@ Transform:
   m_GameObject: {fileID: 1969580134}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.35, y: -37.3, z: -138.67}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 6.2995, y: -37.2989, z: -139.1694}
+  m_LocalScale: {x: 1.101, y: 0.9978, z: 4.6285763}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 852422279}
