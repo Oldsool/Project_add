@@ -5,29 +5,48 @@ using Unity.MLAgents.Sensors;
 using UnityEngine.UIElements;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Norak_MLAgent : Agent
 {
-    private TrackCheckPoint trackCheckPoint;
-    public CheckpointSingle checkpointSingle;
-    private Vector3 NorakPosition;
-    private GameObject checkpointTransform;
+    TrackCheckPoint trackCheckPoint;
+    Vector3 NorakPosition;
 
     private List<CheckpointSingle> checkpointList;
 
     private void Awake()
     {
-        checkpointSingle = GetComponent<CheckpointSingle>();
-        trackCheckPoint = GetComponent<TrackCheckPoint>();
-         NorakPosition = transform.position;
-         checkpointTransform = GameObject.Find("Checkpoints");
+        //checkpointSingle = GetComponent<CheckpointSingle>();
+        trackCheckPoint = FindObjectOfType<TrackCheckPoint>();
+        NorakPosition = transform.position;
+        //checkpointTransform = GameObject.Find("Checkpoints");
 
-        foreach (Transform checkpointSingleTransform in checkpointTransform.transform)
-        {
-            CheckpointSingle checkpointSingle = checkpointSingleTransform.GetComponent<CheckpointSingle>();
-            checkpointList.Add(checkpointSingle);
-            Debug.Log(checkpointList.Count);
-        }
+        //foreach (Transform checkpointSingleTransform in checkpointTransform.transform)
+        //{
+        //    CheckpointSingle checkpointSingle = checkpointSingleTransform.GetComponent<CheckpointSingle>();
+        //    checkpointList.Add(checkpointSingle);
+        //    Debug.Log(checkpointList.Count);
+        //}
+        
+    }
+
+    private void Start()
+    {
+        trackCheckPoint.OnPlayerCorrectCheckpoint += TrackCheckpoint_OnCarCorrectCheckpoint;
+        trackCheckPoint.OnPlayerWrongCheckpoint += TrackCheckpoint_OnCarWrongCheckpoint;
+    }
+
+    void TrackCheckpoint_OnCarCorrectCheckpoint()// object sender, EventArgs e)
+    {
+        Debug.Log("Событие произошло!");
+        AddReward(+1);
+    }
+
+    void TrackCheckpoint_OnCarWrongCheckpoint()
+    {
+        Debug.Log("Событие произошло неверно !");
+        AddReward(-1);
+        EndEpisode();
     }
 
     public override void OnEpisodeBegin() // начало нового эпизода
@@ -78,8 +97,8 @@ public class Norak_MLAgent : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
-        continuousActions[0] = Input.GetAxisRaw("Vertical");
-        continuousActions[1] = Input.GetAxisRaw("Horizontal");
+        continuousActions[0] = Input.GetAxisRaw("Horizontal");
+        continuousActions[1] = Input.GetAxisRaw("Vertical");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -87,18 +106,19 @@ public class Norak_MLAgent : Agent
         if (other.TryGetComponent<CheckpointSingle>(out CheckpointSingle checkpointSingle))
         {
             //backGround.material.color = Color.green;
-            AddReward(+5f);
-            
+            //AddReward(+5f);
+            //TrackCheckpoint_OnCarCorrectCheckpoint();
             Debug.Log("Correct");
-            trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
-            EndEpisode();
+           // trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
+            //trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
+            //EndEpisode();
 
         }
         else if (other.TryGetComponent<Wall>(out Wall wall))
         {
             //backGround.material.color = Color.red;
             AddReward(-1f);
-            
+
             Debug.Log("Uncorrect");
             EndEpisode();
             //trackCheckPoint.NorakThroughtCheckpoint(checkpoint);

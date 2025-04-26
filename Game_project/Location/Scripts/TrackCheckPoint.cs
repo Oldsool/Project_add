@@ -1,11 +1,12 @@
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TrackCheckPoint : MonoBehaviour
 {
-
+    public event Action OnPlayerCorrectCheckpoint;
+    public event Action OnPlayerWrongCheckpoint;
 
     List <CheckpointSingle> checkpointSinglesList;
     private int nextCheckpointSingleIndex;
@@ -22,6 +23,8 @@ public class TrackCheckPoint : MonoBehaviour
             checkpointSinglesList.Add(checkpointSingle);
         }
 
+        
+
         nextCheckpointSingleIndex = 0;
     }
 
@@ -33,13 +36,16 @@ public class TrackCheckPoint : MonoBehaviour
             nextCheckpointSingleIndex = (nextCheckpointSingleIndex) + 1 % checkpointSinglesList.Count;
         
             Debug.Log(nextCheckpointSingleIndex);
+            OnPlayerCorrectCheckpoint?.Invoke();// this, EventArgs.Empty);
         }
         else
         {
             //uncorrect
             Debug.Log(nextCheckpointSingleIndex);
-           
+            OnPlayerWrongCheckpoint?.Invoke();// this, EventArgs.Empty);
+
         }
     }
     
+
 }
