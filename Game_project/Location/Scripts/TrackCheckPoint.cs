@@ -27,20 +27,22 @@ public class TrackCheckPoint : MonoBehaviour
             checkpointSinglesList.Add(checkpointSingle);
         }
 
-        
 
+        
         nextCheckpointSingleIndex = 0;
+
     }
 
     public Transform GetNextCheckpoint(int count)
     {
+        countCheck = nextCheckpointSingleIndex;
         
-        foreach (CheckpointSingle srfg in checkpointSinglesList)
-        {
             check = checkpointSinglesList[count];
             //Debug.Log(dfg);
-        }
-    
+        
+        
+        
+
         return check.transform;
     }
 

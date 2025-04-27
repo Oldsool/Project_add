@@ -13,25 +13,19 @@ public class Norak_MLAgent : Agent
     Vector3 NorakPosition;
     Quaternion NorakRot;
     CheckpointSingle checkpointSingle;
+    float timer;
 
     private List<CheckpointSingle> checkpointList;
 
     private void Awake()
     {
+        
         //checkpointSingle = GetComponent<CheckpointSingle>();
         trackCheckPoint = FindObjectOfType<TrackCheckPoint>();
         checkpointSingle = FindObjectOfType<CheckpointSingle>();
         NorakPosition = transform.localPosition;
         NorakRot = transform.localRotation;
-        //checkpointTransform = GameObject.Find("Checkpoints");
 
-        //foreach (Transform checkpointSingleTransform in checkpointTransform.transform)
-        //{
-        //    CheckpointSingle checkpointSingle = checkpointSingleTransform.GetComponent<CheckpointSingle>();
-        //    checkpointList.Add(checkpointSingle);
-        //    Debug.Log(checkpointList.Count);
-        //}
-        
     }
 
     private void Start()
@@ -63,13 +57,6 @@ public class Norak_MLAgent : Agent
         transform.localPosition = NorakPosition;
         trackCheckPoint.nextCheckpointSingleIndex = 0;
         transform.localRotation = NorakRot;
-        trackCheckPoint.countCheck = 0;
-        //foreach (CheckpointSingle checkpointSingleTransform in checkpointList)
-        //{
-        //    checkpointSingleTransform.transform.localPosition = ;
-        //}
-
-            //target.localPosition = new Vector3(1, -1, -1);
         }
 
     /// <summary>
@@ -80,13 +67,8 @@ public class Norak_MLAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)  //функция сбора наблюдения, глаза агента
     {
-        //foreach (CheckpointSingle checkpointSingleTransform in checkpointList)
-        //{
-        //    //checkpointSingleTransform.transform.localPosition = ;
-        //    sensor.AddObservation(checkpointSingleTransform.transform.localPosition);
-        //}
-        //sensor.AddObservation(target.localPosition);   // набор наблюдений
-        //Vector3 checkpontForfard = trackCheckPoint.GetNextCheckpoint().transform.forward;
+        
+
         Vector3 CheckpointForward = trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.forward;
         float directionPoint = Vector3.Dot(transform.forward, CheckpointForward);
         sensor.AddObservation(directionPoint);
@@ -107,37 +89,53 @@ public class Norak_MLAgent : Agent
     // Вызывается когда ML agent решит применить действие
     public override void OnActionReceived(ActionBuffers actions)   // получает действия от модели и применяет их к агенту. , руки и ноги агента
     {
-        float moveX = actions.ContinuousActions[0]; // actions.ContinuousActions - это действие непрерывного типа по индексу (0)
-        float moveY = actions.ContinuousActions[1];
+       
+        float forwardAmount = 0f;
+        float turnAmount = 0f;
 
-        float SpeedMovement = 1.0f;
-        float RotateNorak = 20.0f;
+        switch (actions.DiscreteActions[0])
+        {
+            case 0: forwardAmount =  0f; break;
+            case 1: forwardAmount = +1f; break;
+            case 2: forwardAmount = -1f; break;
+        }
+        switch (actions.DiscreteActions[1])
+        {
+            case 0: turnAmount =  0f; break;
+            case 1: turnAmount = +1f; break;
+            case 2: turnAmount = -1f; break;
+        }
 
-        transform.localPosition += transform.forward * moveX * SpeedMovement * Time.deltaTime;//new Vector3(transform.forward * moveX, 0, 0) * SpeedMovement * Time.deltaTime;
-        transform.Rotate(0, moveY * RotateNorak * Time.deltaTime, 0);
+        Vector3 directionToCheckpoint = (trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.position - transform.position).normalized;
+
+        // Двигаем объект по направлению к чекпоинту
+        transform.localPosition += directionToCheckpoint * 5f * forwardAmount * Time.deltaTime;
+
+        // Плавный поворот к чекпоинту
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToCheckpoint), Time.deltaTime * 5f); // 5f — скорость поворота
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
-        continuousActions[0] = Input.GetAxisRaw("Vertical");
-        continuousActions[1] = Input.GetAxisRaw("Horizontal");
+
+
+        int forwardAction = 0;
+        if (Input.GetKey(KeyCode.W)) forwardAction = 1;
+        if (Input.GetKey(KeyCode.S)) forwardAction = 2;
+
+        int turnAction = 0;
+        if (Input.GetKey(KeyCode.D)) turnAction = 1;
+        if (Input.GetKey(KeyCode.A)) turnAction = 2;
+
+        ActionSegment<int> discreteAction = actionsOut.DiscreteActions;
+        discreteAction[0] = forwardAction;
+        discreteAction[1] = turnAction;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<CheckpointSingle>(out CheckpointSingle checkpointSingle))
         {
-            trackCheckPoint.countCheck++;
-            //backGround.material.color = Color.green;
-            //AddReward(+5f);
-            //TrackCheckpoint_OnCarCorrectCheckpoint();
-            //Debug.Log("Correct");
-           // trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
-            //trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
-            //EndEpisode();
-            //float direct = Vector3.Dot(transform.forward, checkpointSingle.transform.forward);
-            //Debug.Log(direct);
 
         }
         else if (other.TryGetComponent<Wall>(out Wall wall))
@@ -146,10 +144,28 @@ public class Norak_MLAgent : Agent
             AddReward(-1f);
 
             Debug.Log("Коснулись стены");
-            EndEpisode();
+            
             //trackCheckPoint.NorakThroughtCheckpoint(checkpoint);
 
         }
 
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
+        {
+            timer +=Time.deltaTime;
+            if (timer > 3.0f)
+            {
+                AddReward(-2);
+                EndEpisode();
+                timer = 0;
+            }
+            
+            Debug.Log(timer);
+            //Debug.Log("ctena");
+            AddReward(-1f);
+        }
     }
 }
