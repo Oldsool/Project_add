@@ -11,6 +11,8 @@ public class Norak_MLAgent : Agent
 {
     TrackCheckPoint trackCheckPoint;
     Vector3 NorakPosition;
+    Quaternion NorakRot;
+    CheckpointSingle checkpointSingle;
 
     private List<CheckpointSingle> checkpointList;
 
@@ -18,7 +20,9 @@ public class Norak_MLAgent : Agent
     {
         //checkpointSingle = GetComponent<CheckpointSingle>();
         trackCheckPoint = FindObjectOfType<TrackCheckPoint>();
-        NorakPosition = transform.position;
+        checkpointSingle = FindObjectOfType<CheckpointSingle>();
+        NorakPosition = transform.localPosition;
+        NorakRot = transform.localRotation;
         //checkpointTransform = GameObject.Find("Checkpoints");
 
         //foreach (Transform checkpointSingleTransform in checkpointTransform.transform)
@@ -34,6 +38,11 @@ public class Norak_MLAgent : Agent
     {
         trackCheckPoint.OnPlayerCorrectCheckpoint += TrackCheckpoint_OnCarCorrectCheckpoint;
         trackCheckPoint.OnPlayerWrongCheckpoint += TrackCheckpoint_OnCarWrongCheckpoint;
+
+        trackCheckPoint.countCheck = 0;
+        //float directionPoint = Vector3.Dot(transform.forward, checkpointSingle.transform.forward);
+        //Debug.Log(directionPoint);
+        //Debug.Log(checkpointSingle.transform.name);
     }
 
     void TrackCheckpoint_OnCarCorrectCheckpoint()// object sender, EventArgs e)
@@ -52,6 +61,9 @@ public class Norak_MLAgent : Agent
     public override void OnEpisodeBegin() // начало нового эпизода
     {
         transform.localPosition = NorakPosition;
+        trackCheckPoint.nextCheckpointSingleIndex = 0;
+        transform.localRotation = NorakRot;
+        trackCheckPoint.countCheck = 0;
         //foreach (CheckpointSingle checkpointSingleTransform in checkpointList)
         //{
         //    checkpointSingleTransform.transform.localPosition = ;
@@ -74,6 +86,15 @@ public class Norak_MLAgent : Agent
         //    sensor.AddObservation(checkpointSingleTransform.transform.localPosition);
         //}
         //sensor.AddObservation(target.localPosition);   // набор наблюдений
+        //Vector3 checkpontForfard = trackCheckPoint.GetNextCheckpoint().transform.forward;
+        Vector3 CheckpointForward = trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.forward;
+        float directionPoint = Vector3.Dot(transform.forward, CheckpointForward);
+        sensor.AddObservation(directionPoint);
+
+        Vector3 directionToCheckpoint = (trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.position - transform.position).normalized;
+        
+        sensor.AddObservation(directionToCheckpoint); // добавляем направление на цель
+
         sensor.AddObservation(transform.localPosition); //3 
     }
 
@@ -90,21 +111,24 @@ public class Norak_MLAgent : Agent
         float moveY = actions.ContinuousActions[1];
 
         float SpeedMovement = 1.0f;
+        float RotateNorak = 20.0f;
 
-        transform.localPosition += new Vector3(moveX, 0, moveY) * (SpeedMovement * Time.deltaTime);
+        transform.localPosition += transform.forward * moveX * SpeedMovement * Time.deltaTime;//new Vector3(transform.forward * moveX, 0, 0) * SpeedMovement * Time.deltaTime;
+        transform.Rotate(0, moveY * RotateNorak * Time.deltaTime, 0);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
-        continuousActions[0] = Input.GetAxisRaw("Horizontal");
-        continuousActions[1] = Input.GetAxisRaw("Vertical");
+        continuousActions[0] = Input.GetAxisRaw("Vertical");
+        continuousActions[1] = Input.GetAxisRaw("Horizontal");
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<CheckpointSingle>(out CheckpointSingle checkpointSingle))
         {
+            trackCheckPoint.countCheck++;
             //backGround.material.color = Color.green;
             //AddReward(+5f);
             //TrackCheckpoint_OnCarCorrectCheckpoint();
@@ -112,6 +136,8 @@ public class Norak_MLAgent : Agent
            // trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
             //trackCheckPoint.NorakThroughtCheckpoint(checkpointSingle);
             //EndEpisode();
+            //float direct = Vector3.Dot(transform.forward, checkpointSingle.transform.forward);
+            //Debug.Log(direct);
 
         }
         else if (other.TryGetComponent<Wall>(out Wall wall))

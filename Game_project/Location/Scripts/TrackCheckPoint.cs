@@ -7,19 +7,23 @@ public class TrackCheckPoint : MonoBehaviour
 {
     public event Action OnPlayerCorrectCheckpoint;
     public event Action OnPlayerWrongCheckpoint;
-
+    CheckpointSingle check;
     List <CheckpointSingle> checkpointSinglesList;
-    private int nextCheckpointSingleIndex;
+    Transform checkpointTransform;
+    public int nextCheckpointSingleIndex;
+
+    public int countCheck;
 
     void Awake()
     {
-        Transform checkpointTransform = transform.Find("Checkpoints");
+        checkpointTransform = transform.Find("Checkpoints");
 
         checkpointSinglesList = new List <CheckpointSingle>();
         foreach ( Transform  checkpointSingleTransform in checkpointTransform)
         {
             CheckpointSingle checkpointSingle = checkpointSingleTransform.GetComponent<CheckpointSingle>();
             checkpointSingle.SetTrackCheckpoints(this);
+           
             checkpointSinglesList.Add(checkpointSingle);
         }
 
@@ -27,6 +31,19 @@ public class TrackCheckPoint : MonoBehaviour
 
         nextCheckpointSingleIndex = 0;
     }
+
+    public Transform GetNextCheckpoint(int count)
+    {
+        
+        foreach (CheckpointSingle srfg in checkpointSinglesList)
+        {
+            check = checkpointSinglesList[count];
+            //Debug.Log(dfg);
+        }
+    
+        return check.transform;
+    }
+
 
     public void NorakThroughtCheckpoint(CheckpointSingle checkpointSingle)
     {
@@ -37,6 +54,10 @@ public class TrackCheckPoint : MonoBehaviour
         
             Debug.Log("Верный чекпоинт +1 ");
             OnPlayerCorrectCheckpoint?.Invoke();// this, EventArgs.Empty);
+            if (nextCheckpointSingleIndex == 39) 
+            {
+                nextCheckpointSingleIndex = 0;
+            }
         }
         else
         {
