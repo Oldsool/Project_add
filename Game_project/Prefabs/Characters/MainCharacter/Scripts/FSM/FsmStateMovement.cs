@@ -61,24 +61,24 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
 
             }  // скрипт для поворота по камере
 
-            if (Input.GetKey(KeyCode.A))
-            {
-                rotatePlayer();
-            }
+            //if (Input.GetKey(KeyCode.A))
+            //{
+            //    rotatePlayer();
+            //}
         }
 
-        protected void rotatePlayer()
-        {
-            Transform.rotation = Quaternion.Slerp(
-                    Transform.rotation,
-                    Quaternion.Euler(0,
-                    Transform.rotation.y - 90f,
-                    0), Time.fixedDeltaTime * 14f);
-        }
+        //protected void rotatePlayer()
+        //{
+        //    Transform.rotation = Quaternion.Slerp(
+        //            Transform.rotation,
+        //            Quaternion.Euler(0,
+        //            Transform.rotation.y - 90f,
+        //            0), Time.fixedDeltaTime * 14f);
+        //}
 
-        protected void MoveToPlayer()
-        {
+        //protected void MoveToPlayer()
+        //{
 
-        }
+        //}
     }
 }
