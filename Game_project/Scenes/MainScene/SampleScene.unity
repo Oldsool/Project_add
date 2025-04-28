@@ -665,11 +665,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 08202f93998bf644aab58fa8bab4c9d9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.21
+      value: 0.032
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 08202f93998bf644aab58fa8bab4c9d9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 734.76
+      value: 734.38
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 08202f93998bf644aab58fa8bab4c9d9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4506,7 +4506,7 @@ Transform:
   m_GameObject: {fileID: 1317966533}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 322.25998, y: 4.081, z: 921.117}
+  m_LocalPosition: {x: 322.25998, y: 2.2009997, z: 746.807}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4863,7 +4863,7 @@ Transform:
   m_GameObject: {fileID: 1354935969}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 322.25998, y: 4.081, z: 921.117}
+  m_LocalPosition: {x: 322.25998, y: 2.2009997, z: 746.807}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4877,7 +4877,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1354935969}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
   m_Name: 
@@ -4892,12 +4892,12 @@ MonoBehaviour:
   m_MinimumDistanceFromTarget: 0.1
   m_AvoidObstacles: 1
   m_DistanceLimit: 0
-  m_MinimumOcclusionTime: 0
+  m_MinimumOcclusionTime: 0.1
   m_CameraRadius: 0.1
   m_Strategy: 0
   m_MaximumEffort: 1
-  m_SmoothingTime: 0
-  m_Damping: 0
+  m_SmoothingTime: 0.2
+  m_Damping: 5
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
 --- !u!1 &1356325918
@@ -5324,11 +5324,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a94f9f9cb6745b84586ac815fb4beaf2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.4
+      value: 0.52
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a94f9f9cb6745b84586ac815fb4beaf2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 925.11
+      value: 748.8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a94f9f9cb6745b84586ac815fb4beaf2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5361,6 +5361,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a94f9f9cb6745b84586ac815fb4beaf2, type: 3}
       propertyPath: m_Name
       value: Paladin 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a94f9f9cb6745b84586ac815fb4beaf2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5816,12 +5820,12 @@ MonoBehaviour:
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
   m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_YDamping: 0.5
+  m_ZDamping: 0.1
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 4
+  m_CameraDistance: 2
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -6260,7 +6264,7 @@ MonoBehaviour:
   m_ObservationStacks: 1
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
-  m_StartVerticalOffset: 0
+  m_StartVerticalOffset: 0.4
   m_EndVerticalOffset: 0
 --- !u!114 &1707357759
 MonoBehaviour:

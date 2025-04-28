@@ -1,19 +1,24 @@
-using Grpc.Core;
+
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-using UnityEngine.UIElements;
+
 using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+
 public class Norak_MLAgent : Agent
 {
     TrackCheckPoint trackCheckPoint;
+    GameObject _player;
+    CheckpointSingle checkpointSingle;
+
     Vector3 NorakPosition;
     Quaternion NorakRot;
-    CheckpointSingle checkpointSingle;
+    
     float timer;
+    bool playerIsCloseToTheEnemy;
 
     private List<CheckpointSingle> checkpointList;
 
@@ -23,6 +28,8 @@ public class Norak_MLAgent : Agent
         //checkpointSingle = GetComponent<CheckpointSingle>();
         trackCheckPoint = FindObjectOfType<TrackCheckPoint>();
         checkpointSingle = FindObjectOfType<CheckpointSingle>();
+        _player = GameObject.Find("Paladin 1");
+
         NorakPosition = transform.localPosition;
         NorakRot = transform.localRotation;
 
@@ -34,9 +41,6 @@ public class Norak_MLAgent : Agent
         trackCheckPoint.OnPlayerWrongCheckpoint += TrackCheckpoint_OnCarWrongCheckpoint;
 
         trackCheckPoint.countCheck = 0;
-        //float directionPoint = Vector3.Dot(transform.forward, checkpointSingle.transform.forward);
-        //Debug.Log(directionPoint);
-        //Debug.Log(checkpointSingle.transform.name);
     }
 
     void TrackCheckpoint_OnCarCorrectCheckpoint()// object sender, EventArgs e)
@@ -51,6 +55,12 @@ public class Norak_MLAgent : Agent
         AddReward(-1);
         //EndEpisode();
     }
+
+
+    float DistanceBetweenPlayerAndEnemy()  
+    {
+        return Vector3.Distance(transform.position, _player.transform.position);
+    } // дистанция между игроком и врагом
 
     public override void OnEpisodeBegin() // начало нового эпизода
     {
@@ -67,7 +77,10 @@ public class Norak_MLAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)  //функция сбора наблюдения, глаза агента
     {
+       // float dist = DistanceBetweenPlayerAndEnemy();
         
+        //sensor.AddObservation(dist);
+        //Debug.Log(DistanceBetweenPlayerAndEnemy());
 
         Vector3 CheckpointForward = trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.forward;
         float directionPoint = Vector3.Dot(transform.forward, CheckpointForward);
@@ -89,32 +102,51 @@ public class Norak_MLAgent : Agent
     // Вызывается когда ML agent решит применить действие
     public override void OnActionReceived(ActionBuffers actions)   // получает действия от модели и применяет их к агенту. , руки и ноги агента
     {
-       
+
         float forwardAmount = 0f;
         float turnAmount = 0f;
+        float dist = DistanceBetweenPlayerAndEnemy();
 
-        switch (actions.DiscreteActions[0])
+        if (dist < 20.0f)
         {
-            case 0: forwardAmount =  0f; break;
-            case 1: forwardAmount = +1f; break;
-            case 2: forwardAmount = -1f; break;
+            //follow foward palyer
+
+            // Идем прямо к игроку
+            Vector3 directionToPlayer = (_player.transform.position - transform.position).normalized;
+            transform.localPosition += directionToPlayer * 2f * Time.deltaTime;
+
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToPlayer), Time.deltaTime * 5f);
+            if (dist < 1.5f)
+            {
+                AddReward(+2);
+            }
         }
-        switch (actions.DiscreteActions[1])
+        else if (dist >= 20.0f)
         {
-            case 0: turnAmount =  0f; break;
-            case 1: turnAmount = +1f; break;
-            case 2: turnAmount = -1f; break;
+
+
+            switch (actions.DiscreteActions[0])
+            {
+                case 0: forwardAmount = 0f; break;
+                case 1: forwardAmount = +1f; break;
+                case 2: forwardAmount = -1f; break;
+            }
+            switch (actions.DiscreteActions[1])
+            {
+                case 0: turnAmount = 0f; break;
+                case 1: turnAmount = +1f; break;
+                case 2: turnAmount = -1f; break;
+            }
+
+            Vector3 directionToCheckpoint = (trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.position - transform.position).normalized;
+
+            // Двигаем объект по направлению к чекпоинту
+            transform.localPosition += directionToCheckpoint * 5f * forwardAmount * Time.deltaTime;
+
+            // Плавный поворот к чекпоинту
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToCheckpoint), Time.deltaTime * 5f ); // 5f — скорость поворота
         }
-
-        Vector3 directionToCheckpoint = (trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.position - transform.position).normalized;
-
-        // Двигаем объект по направлению к чекпоинту
-        transform.localPosition += directionToCheckpoint * 5f * forwardAmount * Time.deltaTime;
-
-        // Плавный поворот к чекпоинту
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToCheckpoint), Time.deltaTime * 5f); // 5f — скорость поворота
     }
-
     public override void Heuristic(in ActionBuffers actionsOut)
     {
 
