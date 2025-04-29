@@ -2,7 +2,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System;
@@ -10,21 +10,25 @@ using System;
 
 public class Norak_MLAgent : Agent
 {
+    private Animator _animator;
+
     TrackCheckPoint trackCheckPoint;
     GameObject _player;
     CheckpointSingle checkpointSingle;
 
+    Vector3 directionToPlayer;
     Vector3 NorakPosition;
     Quaternion NorakRot;
     
     float timer;
     bool playerIsCloseToTheEnemy;
+    float dist;
 
     private List<CheckpointSingle> checkpointList;
 
     private void Awake()
     {
-        
+        _animator = GetComponent<Animator>();
         //checkpointSingle = GetComponent<CheckpointSingle>();
         trackCheckPoint = FindObjectOfType<TrackCheckPoint>();
         checkpointSingle = FindObjectOfType<CheckpointSingle>();
@@ -105,35 +109,41 @@ public class Norak_MLAgent : Agent
 
         float forwardAmount = 0f;
         float turnAmount = 0f;
-        float dist = DistanceBetweenPlayerAndEnemy();
+        dist = DistanceBetweenPlayerAndEnemy();
 
         if (dist < 20.0f)
         {
+            
+            playerIsCloseToTheEnemy = false;
+            _animator.SetBool("isRunning", false);
             //follow foward palyer
-
-            // »дем пр€мо к игроку
-            Vector3 directionToPlayer = (_player.transform.position - transform.position).normalized;
-            transform.localPosition += directionToPlayer * 2f * Time.deltaTime;
-
+            directionToPlayer = (_player.transform.position - transform.position).normalized;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToPlayer), Time.deltaTime * 5f);
-            if (dist < 1.5f)
+
+            timer += Time.deltaTime;
+            if (timer > 2.0f)
             {
-                AddReward(+2);
+                if (!playerIsCloseToTheEnemy)
+                {
+                    GoTOPlayer();
+                }
             }
         }
         else if (dist >= 20.0f)
         {
-
+            timer = 0f;
+            playerIsCloseToTheEnemy = true;
+            _animator.SetBool("isRunning", true);
 
             switch (actions.DiscreteActions[0])
             {
-                case 0: forwardAmount = 0f; break;
+                case 0: forwardAmount =  0f; break;
                 case 1: forwardAmount = +1f; break;
                 case 2: forwardAmount = -1f; break;
             }
             switch (actions.DiscreteActions[1])
             {
-                case 0: turnAmount = 0f; break;
+                case 0: turnAmount =  0f; break;
                 case 1: turnAmount = +1f; break;
                 case 2: turnAmount = -1f; break;
             }
@@ -147,6 +157,18 @@ public class Norak_MLAgent : Agent
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToCheckpoint), Time.deltaTime * 5f ); // 5f Ч скорость поворота
         }
     }
+
+  void GoTOPlayer()
+    {
+        // »дем пр€мо к игроку
+
+        transform.localPosition += directionToPlayer * 5f * Time.deltaTime;
+        if (dist < 1.5f)
+        {
+            AddReward(+2);
+        }
+    }
+
     public override void Heuristic(in ActionBuffers actionsOut)
     {
 
@@ -187,13 +209,7 @@ public class Norak_MLAgent : Agent
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            timer +=Time.deltaTime;
-            if (timer > 3.0f)
-            {
-                AddReward(-2);
-                EndEpisode();
-                timer = 0;
-            }
+            
             
             Debug.Log(timer);
             //Debug.Log("ctena");
