@@ -2,10 +2,10 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
+using System.Collections;
+
 
 
 public class Norak_MLAgent : Agent
@@ -21,7 +21,8 @@ public class Norak_MLAgent : Agent
     Quaternion NorakRot;
     
     float timer;
-    bool playerIsCloseToTheEnemy;
+    bool playerIsCloseToTheEnemy = false;
+    bool trigOnAttack;
     float dist;
 
     private List<CheckpointSingle> checkpointList;
@@ -114,7 +115,7 @@ public class Norak_MLAgent : Agent
         if (dist < 20.0f)
         {
             
-            playerIsCloseToTheEnemy = false;
+            //playerIsCloseToTheEnemy = false;
             _animator.SetBool("isRunning", false);
             //follow foward palyer
             directionToPlayer = (_player.transform.position - transform.position).normalized;
@@ -127,12 +128,27 @@ public class Norak_MLAgent : Agent
                 {
                     GoTOPlayer();
                 }
+                if (dist < 2f)
+                {
+                    playerIsCloseToTheEnemy = true;
+                    
+                    if (!trigOnAttack)
+                    {
+                        
+                        StartCoroutine(atack());
+                        trigOnAttack = true;
+
+                    }
+
+                    AddReward(+2);
+                }
+                
             }
         }
         else if (dist >= 20.0f)
         {
             timer = 0f;
-            playerIsCloseToTheEnemy = true;
+            //playerIsCloseToTheEnemy = true;
             _animator.SetBool("isRunning", true);
 
             switch (actions.DiscreteActions[0])
@@ -161,13 +177,19 @@ public class Norak_MLAgent : Agent
   void GoTOPlayer()
     {
         // Идем прямо к игроку
-
-        transform.localPosition += directionToPlayer * 5f * Time.deltaTime;
-        if (dist < 1.5f)
-        {
-            AddReward(+2);
-        }
+        transform.localPosition += directionToPlayer * 5f * Time.deltaTime;      
     }
+
+    IEnumerator atack()
+    {
+        _animator.SetTrigger("isAttack");
+        Debug.Log("after 1 sec");
+        yield return new WaitForSeconds(1);
+        timer = 0f;
+        Debug.Log("before 1 sec");
+        
+    }
+
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
