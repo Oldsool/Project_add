@@ -1,3 +1,4 @@
+using Unity.MLAgents.Integrations.Match3;
 using UnityEngine;
 
 namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
@@ -6,6 +7,9 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
     {
         protected readonly Transform Transform;
         protected readonly float Speed;
+        protected Vector3 moveDirection;
+
+        float inputHorizontal;
 
         public FsmStateMovement(Fsm fsm, Transform transform, float speed) : base(fsm) 
         {
@@ -39,7 +43,7 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
 
         protected Vector2 ReadInput()
         {
-            var inputHorizontal = Input.GetAxis("Horizontal");
+            inputHorizontal = Input.GetAxis("Horizontal");
             var inputVertical = Input.GetAxis("Vertical");
             var inputDirection = new Vector2(inputHorizontal, inputVertical);
             return inputDirection;
@@ -47,38 +51,51 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
 
         protected virtual void Move(Vector2 inputDirection)
         {
-            Vector3 moveDirection = Transform.right * inputDirection.x + Transform.forward * inputDirection.y;
-            Transform.position += moveDirection * Speed * Time.deltaTime;
+            moveDirection = Transform.right * inputDirection.x + Transform.forward * inputDirection.y;
 
 
-            if (inputDirection.x >= 0.1 || inputDirection.y >= 0.1)
+            if (Input.GetKey(KeyCode.W))
             {
-                Transform.rotation = Quaternion.Slerp(
-                    Transform.rotation,
-                    Quaternion.Euler(0,
-                    Camera.main.transform.eulerAngles.y,
-                    0), Time.fixedDeltaTime * 14f);
+                MovementPlayerforWS(1);
+                RotatePlayer(0);
 
-            }  // скрипт для поворота по камере
+            }
 
-            //if (Input.GetKey(KeyCode.A))
-            //{
-            //    rotatePlayer();
-            //}
+            if (Input.GetKey(KeyCode.S))
+            {
+                MovementPlayerforWS(-1);
+                RotatePlayer(180);
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                RotatePlayer(90);
+                MovementPlayerforAD(1);
+            }
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                RotatePlayer(-90);
+                MovementPlayerforAD(-1);
+            }
         }
 
-        //protected void rotatePlayer()
-        //{
-        //    Transform.rotation = Quaternion.Slerp(
-        //            Transform.rotation,
-        //            Quaternion.Euler(0,
-        //            Transform.rotation.y - 90f,
-        //            0), Time.fixedDeltaTime * 14f);
-        //}
+        protected void MovementPlayerforAD(int mnj) 
+        {
+            Transform.position += Transform.forward * inputHorizontal * mnj * (Speed * Time.deltaTime);
+        }    // движение по A and D
+        protected void MovementPlayerforWS(int mnj)
+        {
+            Transform.position += moveDirection * (Speed * Time.deltaTime) * mnj;
+        }//  движение по W and S
 
-        //protected void MoveToPlayer()
-        //{
-
-        //}
+        protected void RotatePlayer(int _rot)
+        {
+            Transform.rotation = Quaternion.Slerp(
+                    Transform.rotation,
+                    Quaternion.Euler(0,
+                    Camera.main.transform.eulerAngles.y + (_rot),
+                    0), Time.fixedDeltaTime * 14);
+        }  // поворот обьекта относительно камеры
     }
 }
