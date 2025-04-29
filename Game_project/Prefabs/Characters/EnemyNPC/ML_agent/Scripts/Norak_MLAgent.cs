@@ -5,6 +5,7 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Assets.Game_project.Prefabs.Characters.EnemyNPC.ML_agents.Scripts;
 
 
 
@@ -15,6 +16,7 @@ public class Norak_MLAgent : Agent
     TrackCheckPoint trackCheckPoint;
     GameObject _player;
     CheckpointSingle checkpointSingle;
+    AttackPlayer attackPlaeyr;
 
     Vector3 directionToPlayer;
     Vector3 NorakPosition;
@@ -30,7 +32,8 @@ public class Norak_MLAgent : Agent
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        //checkpointSingle = GetComponent<CheckpointSingle>();
+      
+       attackPlaeyr = new AttackPlayer();
         trackCheckPoint = FindObjectOfType<TrackCheckPoint>();
         checkpointSingle = FindObjectOfType<CheckpointSingle>();
         _player = GameObject.Find("Paladin 1");
@@ -82,11 +85,6 @@ public class Norak_MLAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)  //функция сбора наблюдения, глаза агента
     {
-       // float dist = DistanceBetweenPlayerAndEnemy();
-        
-        //sensor.AddObservation(dist);
-        //Debug.Log(DistanceBetweenPlayerAndEnemy());
-
         Vector3 CheckpointForward = trackCheckPoint.GetNextCheckpoint(trackCheckPoint.countCheck).transform.forward;
         float directionPoint = Vector3.Dot(transform.forward, CheckpointForward);
         sensor.AddObservation(directionPoint);
@@ -114,33 +112,38 @@ public class Norak_MLAgent : Agent
 
         if (dist < 20.0f)
         {
-            
-            //playerIsCloseToTheEnemy = false;
             _animator.SetBool("isRunning", false);
-            //follow foward palyer
-            directionToPlayer = (_player.transform.position - transform.position).normalized;
+            // поворачиваемся к игроку и тупим 2 секунды
+            directionToPlayer = (_player.transform.position - transform.position).normalized; // направление
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToPlayer), Time.deltaTime * 5f);
 
             timer += Time.deltaTime;
             if (timer > 2.0f)
             {
-                if (!playerIsCloseToTheEnemy)
+                    // идем к игроку 
+                if (!playerIsCloseToTheEnemy)      
                 {
                     GoTOPlayer();
                 }
-                if (dist < 2f)
+                if (dist < 1.5f)
                 {
                     playerIsCloseToTheEnemy = true;
-                    
-                    if (!trigOnAttack)
-                    {
-                        
-                        StartCoroutine(atack());
-                        trigOnAttack = true;
 
-                    }
+                    //if (!trigOnAttack)
+                    //{
+                    StartCoroutine(attackPlaeyr.atack(_animator, transform));
+                    Debug.Log(dist);
+
+                    timer = 0f;
+                        //trigOnAttack = true;
+
+                   // }
 
                     AddReward(+2);
+                }
+                else
+                {
+                    playerIsCloseToTheEnemy = false;
                 }
                 
             }
@@ -174,21 +177,19 @@ public class Norak_MLAgent : Agent
         }
     }
 
-  void GoTOPlayer()
+
+
+
+
+
+    void GoTOPlayer()
     {
+        _animator.SetBool("isRunning", true);
         // Идем прямо к игроку
-        transform.localPosition += directionToPlayer * 5f * Time.deltaTime;      
+        transform.localPosition += directionToPlayer  * 5f * Time.deltaTime;    
     }
 
-    IEnumerator atack()
-    {
-        _animator.SetTrigger("isAttack");
-        Debug.Log("after 1 sec");
-        yield return new WaitForSeconds(1);
-        timer = 0f;
-        Debug.Log("before 1 sec");
-        
-    }
+
 
 
     public override void Heuristic(in ActionBuffers actionsOut)
