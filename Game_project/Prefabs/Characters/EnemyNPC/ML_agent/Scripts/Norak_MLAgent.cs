@@ -1,10 +1,8 @@
-
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 using Assets.Game_project.Prefabs.Characters.EnemyNPC.ML_agents.Scripts;
 
 
@@ -125,14 +123,14 @@ public class Norak_MLAgent : Agent
                 {
                     GoTOPlayer();
                 }
-                if (dist < 1.5f)
+                if (dist < 1.73f)
                 {
                     playerIsCloseToTheEnemy = true;
 
                     //if (!trigOnAttack)
                     //{
-                    StartCoroutine(attackPlaeyr.atack(_animator, transform));
-                    Debug.Log(dist);
+                    StartCoroutine(attackPlaeyr.atack(_animator, transform,dist));
+                   
 
                     timer = 0f;
                         //trigOnAttack = true;
@@ -177,20 +175,12 @@ public class Norak_MLAgent : Agent
         }
     }
 
-
-
-
-
-
     void GoTOPlayer()
     {
         _animator.SetBool("isRunning", true);
         // Идем прямо к игроку
         transform.localPosition += directionToPlayer  * 5f * Time.deltaTime;    
     }
-
-
-
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
