@@ -3366,6 +3366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PressMouseButton1: 0
+  isAttacking: 0
 --- !u!136 &879849681
 CapsuleCollider:
   m_ObjectHideFlags: 0

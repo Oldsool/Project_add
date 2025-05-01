@@ -8,7 +8,7 @@ public class norakattackPlayer : MonoBehaviour
     GameObject _norak;
     GameObject _player;
     bool _mouseButton;
-    FsmExample preesMOuseButton;
+    FsmExample playerScript;
 
     // Start is called before the first frame update
     void Start()
@@ -19,13 +19,13 @@ public class norakattackPlayer : MonoBehaviour
 
         _animator = _norak.GetComponent<Animator>();
 
-        preesMOuseButton = _player.GetComponent<FsmExample>();
+        playerScript = _player.GetComponent<FsmExample>();
         
     }
 
     private void Update()
     {
-        _mouseButton = preesMOuseButton.PressMouseButton1;
+        _mouseButton = playerScript.PressMouseButton1;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -35,6 +35,7 @@ public class norakattackPlayer : MonoBehaviour
             if (!_mouseButton)
             {
                 Debug.Log("удар по коллайдеру паладина");
+                playerScript.player.health--;
             }
             else
             {

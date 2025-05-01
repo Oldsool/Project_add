@@ -1,3 +1,4 @@
+using Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class handlingOfInputOfBlow : MonoBehaviour
     private Collider _collider;
 
     Animator _animator;
+    FsmExample playerScript;
 
     void Start()
     {
@@ -18,8 +20,11 @@ public class handlingOfInputOfBlow : MonoBehaviour
         
         _animator = _norak.GetComponent<Animator>();
 
+
         _collider = GetComponent<Collider>();
         _collider.enabled = false;
+
+        playerScript = _player.GetComponent<FsmExample>();
     }
 
 
@@ -27,8 +32,11 @@ public class handlingOfInputOfBlow : MonoBehaviour
     {
         if(other.TryGetComponent<Norak>(out Norak norak))   //условие атаки врага
         {
-            //_animator.SetTrigger("isShieldImpact");
-            Debug.Log("1");
+            if (playerScript.isAttacking)
+            {
+                Debug.Log("ya atakuyu Noraka");
+            }
+            
         }
     }
 
