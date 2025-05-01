@@ -3365,6 +3365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f35b6dca09698f94eb48e96e8724e00c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PressMouseButton1: 0
 --- !u!136 &879849681
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -8676,7 +8677,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.11, y: 0.06, z: 1}
-  m_Center: {x: 0.93, y: 1.38, z: 0.27}
+  m_Center: {x: 0.75, y: 1.38, z: 0.27}
 --- !u!114 &2141680182
 MonoBehaviour:
   m_ObjectHideFlags: 0

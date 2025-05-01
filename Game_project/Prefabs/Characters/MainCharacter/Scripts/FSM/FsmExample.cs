@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.Windows;
+using System.Collections;
+
 
 namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
 {
@@ -11,7 +12,10 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
         private Animator animator;
         handlingOfInputOfBlow _handlingOfInputOfBlow;
         Collider andlingOfInputOfBlow;
- 
+
+        public bool PressMouseButton1 = false;
+        bool isAttacking = false;
+
 
         void Start()
         {
@@ -35,18 +39,37 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
         {
             _fsm.Update();
 
-            if (UnityEngine.Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1))
             {
-                
+                PressMouseButton1 = true;
                 andlingOfInputOfBlow.enabled = true;
                 animator.SetBool("isDefence", true);
             }
-            else if (UnityEngine.Input.GetMouseButtonUp(1))
+            else if (Input.GetMouseButtonUp(1))
             {
-                
+                PressMouseButton1 = false;
                 andlingOfInputOfBlow.enabled = false;
                 animator.SetBool("isDefence", false);
             }
+
+            Debug.Log(isAttacking);
+
+            if (Input.GetMouseButtonDown(0) && !isAttacking)
+            {
+                isAttacking = true;
+                
+                StartCoroutine(WaitForAttackEnd());
+            }
+
+        }
+
+
+        IEnumerator WaitForAttackEnd()
+        {
+            animator.SetTrigger("isAttack");
+            yield return new WaitForSeconds(1.5f); ;
+
+            isAttacking = false;
         }
     }
 }

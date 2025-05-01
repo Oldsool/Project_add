@@ -1,32 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
+using Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM;
+
 using UnityEngine;
 
 public class norakattackPlayer : MonoBehaviour
 {
-    bool atac = false;
     Animator _animator;
     GameObject _norak;
+    GameObject _player;
+    bool _mouseButton;
+    FsmExample preesMOuseButton;
+
     // Start is called before the first frame update
     void Start()
     {
         _norak = GameObject.Find("Norak");
+        _player = GameObject.Find("Paladin 1");
+        
 
         _animator = _norak.GetComponent<Animator>();
+
+        preesMOuseButton = _player.GetComponent<FsmExample>();
+        
     }
 
+    private void Update()
+    {
+        _mouseButton = preesMOuseButton.PressMouseButton1;
+    }
     private void OnTriggerEnter(Collider other)
     {
-        
+
         if (other.TryGetComponent<Paladin>(out Paladin paladin))   //условие атаки плейера
         {
-            //_animator.SetTrigger("isShieldImpact");
-            Debug.Log("Норак атакует");
+            if (!_mouseButton)
+            {
+                Debug.Log("удар по коллайдеру паладина");
+            }
+            else
+            {
+                Debug.Log("Неверная атака, меч типа поднят ");
+            }
         }
-        else if (other.TryGetComponent<handlingOfInputOfBlow>(out handlingOfInputOfBlow handlingOfInputOfBlow))  //если удар меч о меч
+        if (other.TryGetComponent<handlingOfInputOfBlow>(out handlingOfInputOfBlow handlingOfInputOfBlow))  //если удар меч о меч
         {
-            _animator.SetTrigger("isShieldImpact");
-            Debug.Log("Скрестили мечи");
+            
+                _animator.SetTrigger("isShieldImpact");
+                Debug.Log("Удар при активированном мече");
+                
+            
+            
+            
         }
     }
 }

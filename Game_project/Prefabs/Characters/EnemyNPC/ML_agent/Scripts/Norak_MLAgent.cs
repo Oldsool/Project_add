@@ -185,7 +185,6 @@ public class Norak_MLAgent : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
 
-
         int forwardAction = 0;
         if (Input.GetKey(KeyCode.W)) forwardAction = 1;
         if (Input.GetKey(KeyCode.S)) forwardAction = 2;
@@ -207,13 +206,7 @@ public class Norak_MLAgent : Agent
         }
         else if (other.TryGetComponent<Wall>(out Wall wall))
         {
-            //backGround.material.color = Color.red;
             AddReward(-1f);
-
-            Debug.Log("Коснулись стены");
-            
-            //trackCheckPoint.NorakThroughtCheckpoint(checkpoint);
-
         }
 
     }
@@ -222,10 +215,6 @@ public class Norak_MLAgent : Agent
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            
-            
-            Debug.Log(timer);
-            //Debug.Log("ctena");
             AddReward(-1f);
         }
     }

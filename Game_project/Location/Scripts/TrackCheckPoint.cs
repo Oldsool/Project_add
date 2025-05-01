@@ -38,10 +38,6 @@ public class TrackCheckPoint : MonoBehaviour
         countCheck = nextCheckpointSingleIndex;
         
             check = checkpointSinglesList[count];
-            //Debug.Log(dfg);
-        
-        
-        
 
         return check.transform;
     }
@@ -54,8 +50,7 @@ public class TrackCheckPoint : MonoBehaviour
             //correct
             nextCheckpointSingleIndex = (nextCheckpointSingleIndex) + 1 % checkpointSinglesList.Count;
         
-            Debug.Log("Верный чекпоинт +1 ");
-            OnPlayerCorrectCheckpoint?.Invoke();// this, EventArgs.Empty);
+            OnPlayerCorrectCheckpoint?.Invoke();
             if (nextCheckpointSingleIndex == 39) 
             {
                 nextCheckpointSingleIndex = 0;
@@ -64,8 +59,7 @@ public class TrackCheckPoint : MonoBehaviour
         else
         {
             //uncorrect
-            Debug.Log("неверный чекпоинт -1 ");
-            OnPlayerWrongCheckpoint?.Invoke();// this, EventArgs.Empty);
+            OnPlayerWrongCheckpoint?.Invoke();
 
         }
     }
