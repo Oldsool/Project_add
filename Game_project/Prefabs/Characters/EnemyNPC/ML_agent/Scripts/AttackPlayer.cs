@@ -6,9 +6,12 @@ namespace Assets.Game_project.Prefabs.Characters.EnemyNPC.ML_agents.Scripts
 {
     public class AttackPlayer
     {
+        public bool swordUp = false;
+
         public IEnumerator atack(Animator _animator, Transform transform,float dist)  // сначала атакуем
         {
             _animator.SetTrigger("isAttack");
+            swordUp = true;
             // Теперь отходим назад
             if (dist < 1.63f)
             {
@@ -23,7 +26,11 @@ namespace Assets.Game_project.Prefabs.Characters.EnemyNPC.ML_agents.Scripts
             float retreatSpeed = 3f;
             float timer = 0f;
 
+            swordUp = false;
+
+
             _animator.SetTrigger("isRunBack");
+            
 
             while (timer < retreatTime)
             {

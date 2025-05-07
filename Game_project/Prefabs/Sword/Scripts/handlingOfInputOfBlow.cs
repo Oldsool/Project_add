@@ -13,13 +13,15 @@ public class handlingOfInputOfBlow : MonoBehaviour
     Animator _animator;
     FsmExample playerScript;
 
+    Norak norak;
+
     void Start()
     {
         _player = GameObject.Find("Paladin 1");
         _norak = GameObject.Find("Norak");
         
         _animator = _norak.GetComponent<Animator>();
-
+        norak = _norak.GetComponent<Norak>();
 
         _collider = GetComponent<Collider>();
         _collider.enabled = false;
@@ -32,11 +34,18 @@ public class handlingOfInputOfBlow : MonoBehaviour
     {
         if(other.TryGetComponent<Norak>(out Norak norak))   //условие атаки врага
         {
+            if (norak.norak.health <= 0)
+                return;
+
             if (playerScript.isAttacking)
             {
                 Debug.Log("ya atakuyu Noraka");
+                norak.norak.health--;
             }
-            
+            if (norak.norak.health == 0)
+            {
+                
+            }
         }
     }
 

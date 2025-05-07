@@ -17,7 +17,7 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
         public bool PressMouseButton1 = false;
         public bool isAttacking = false;
         public Character player;
-        bool erg = true;
+        bool diad = true;
         void Start()
         {
             player = new Character();
@@ -45,14 +45,10 @@ namespace Assets.Game_project.Prefabs.Characters.MainCharacter.Scripts.FSM
             if (player.health == 0)
             {
                 
-                if (erg)
+                if (diad)
                 {
-                    //if (!animator.GetBool("isDeath"))
-                   // {
-                        animator.SetTrigger("isDeath");
-                    //}
-                    Debug.Log("зашли один раз");
-                    erg = false;
+                    animator.SetTrigger("isDeath");     // после анимации показ экрана вас убили надо би
+                    diad = false;
                 }
             }
 

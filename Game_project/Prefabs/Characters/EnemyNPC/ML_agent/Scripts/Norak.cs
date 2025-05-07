@@ -1,25 +1,48 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class Norak : MonoBehaviour
 {
-    //private float Hinpit;
-    //private float Vinput;
-    //private float Speed = 25.0f;
+    public Character norak;
+    bool died = false;
+    private Animator animator;
 
-    //private void Update()
-    //{
-    //    Hinpit = Input.GetAxis("Horizontal");
-    //    Vinput = Input.GetAxis("Vertical");
+    public norakattackPlayer swordScript;
 
-    //    MoveNorak(Hinpit, Vinput);
-    //}
 
-    //void MoveNorak(float Hinput, float Vinput)
-    //{
-    //    Vector3 moveDirection = transform.right * Hinpit + transform.forward * Vinput;
-    //    transform.position += moveDirection * Speed * Time.deltaTime;
-    //}
+    private void Start()
+    {
+        norak = new Character();
+        norak.health = 1f;
+        animator = GetComponent<Animator>();
+
+
+
+    }
+
+    private void Update()
+    {
+        if (!died && norak.health == 0)
+        {
+            
+            
+
+            StartCoroutine(DeadNorak());
+            died = true;
+        }
+    }
+
+    IEnumerator DeadNorak()
+    {
+        GetComponent<Norak_MLAgent>().enabled = false;
+        swordScript.enabled = false;
+
+        animator.SetTrigger("isNorakDeath");
+        yield return null;
+    }
+
+
 }
 
 
