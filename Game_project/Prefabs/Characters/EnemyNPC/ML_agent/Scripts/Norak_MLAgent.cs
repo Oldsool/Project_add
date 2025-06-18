@@ -73,7 +73,13 @@ public class Norak_MLAgent : Agent
         transform.localPosition = NorakPosition;
         trackCheckPoint.nextCheckpointSingleIndex = 0;
         transform.localRotation = NorakRot;
-        }
+    }
+
+
+
+
+
+
 
     /// <summary>
     /// Нейросеть — не человек. Она ничего не знает по умолчанию. Вот прямо вообще ничего 
@@ -93,8 +99,6 @@ public class Norak_MLAgent : Agent
 
         sensor.AddObservation(transform.localPosition); //3 
     }
-
-
 
     /// <summary>
     /// Что делает: здесь обрабатываются действия, которые нейросеть "отдает" агенту.Ты применяешь эти действия к объекту(двигаешь его, прыгаешь и т.д.)
